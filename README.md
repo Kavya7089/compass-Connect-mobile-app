@@ -1,182 +1,304 @@
 # Campus Connect - React Native Mobile App
 
-A comprehensive college management mobile application built with React Native and Supabase, connecting students, teachers, and administrators.
+A comprehensive college management mobile application built with React Native and Expo, powered by Express.js backend and MongoDB database. Connects students, teachers, and administrators with integrated group chat, event management, and notifications.
 
 ## Features
 
 ### Student Features
-- 📝 Take mock tests created by teachers
-- 📊 View test results and average scores
-- ❓ Ask doubts to teachers
-- 📚 Request books from library
-- 📄 Access study notes uploaded by teachers
+- ?? Take mock tests created by teachers
+- ?? View test results and performance analytics
+- ? Ask doubts to teachers with real-time replies
+- ?? Request and manage library books
+- ?? Download study notes uploaded by teachers
+-  View announcements and updates
+-  Join community discussions
+-  Register for college events
+-  Get instant notifications
+-  Join interest-based group chats with priorities
+-  Access WhatsApp AI support
 
 ### Teacher Features
-- 📝 Create and manage mock tests
-- 📄 Upload study notes (PDF files)
-- ❓ View and reply to student doubts
+-  Create and manage mock tests
+-  Upload study materials (PDFs)
+-  View and reply to student doubts
+-  Post announcements to students
+-  Participate in community discussions
+-  Create and manage college events
+-  Manage event attendance
+-  Access group chats for coordination
+-  Send notifications to students
 
 ### Admin Features
-- 👥 Approve/reject student and teacher registrations
-- 📚 Manage library (add books, mark availability, handle requests)
-- 💰 Manage fines for overdue books
-- 🔐 Full system control
+-  Approve/reject student and teacher registrations
+-  Manage library (add books, mark availability, handle requests, set fines)
+-  Track and manage fines for overdue books
+-  View system analytics and user statistics
+-  Full system control and user management
+
+## Tech Stack
+
+- **Frontend**: React Native + Expo
+- **Backend**: Node.js + Express.js
+- **Database**: MongoDB (Mongoose ODM)
+- **Authentication**: JWT (JSON Web Tokens)
+- **Storage**: Local device storage (SecureStore for tokens)
+- **Real-time**: Event-driven notifications system
+- **Navigation**: React Navigation (Stack Navigator)
 
 ## Prerequisites
 
 - Node.js (v14 or higher)
 - npm or yarn
 - Expo CLI (`npm install -g expo-cli`)
-- Supabase account and project
+- MongoDB (local or cloud - MongoDB Atlas)
+- Backend server running on port 5000
 
 ## Setup Instructions
 
-1. **Install Dependencies**
-   ```bash
-   cd mobile-app
-   npm install
-   npx expo install --fix  # Fixes version compatibility issues
-   ```
+### 1. Backend Setup
 
-2. **Create App Assets** (Required)
-   - Create placeholder images in the `assets` folder:
-     - `icon.png` (1024x1024px) - App icon
-     - `splash.png` (1242x2436px) - Splash screen
-     - `adaptive-icon.png` (1024x1024px) - Android adaptive icon
-     - `favicon.png` (48x48px) - Web favicon
-   
-   **Quick Solution**: You can use any image editor to create simple colored squares, or use online tools like:
-   - [Expo Asset Generator](https://docs.expo.dev/guides/app-icons/)
-   - [AppIcon.co](https://www.appicon.co/)
-   - Or create simple 1024x1024px colored images manually
+**Prerequisites:**
+- MongoDB running locally or MongoDB Atlas account
 
-3. **Configure Supabase**
-   - Create a `.env` file in the `mobile-app` directory
-   - Add your Supabase credentials:
-     ```
-     EXPO_PUBLIC_SUPABASE_URL=your_supabase_project_url
-     EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-     ```
-   - **Important**: The app will show an error screen if these are not set
+**Steps:**
 
-4. **Set up Supabase Database**
-   - Go to your Supabase project dashboard
-   - Navigate to SQL Editor
-   - Run the schema from `../database-setup/schema.sql`
-   - Run the additional schema from `database-extensions.sql` (in this folder)
-   - Create a storage bucket named `notes` for file uploads
+```bash
+# Navigate to backend
+cd backend
 
-5. **Run the App**
-   ```bash
-   npm start
-   ```
-   - Press `a` for Android emulator
-   - Press `i` for iOS simulator
-   - Scan QR code with Expo Go app on your phone
-   - **Note**: Make sure your Expo Go app matches the SDK version (SDK 49) or upgrade the project to SDK 54
+# Install dependencies
+npm install
+
+# Start backend server
+npm start
+# Server should be running on http://localhost:5000
+```
+
+**Verify backend is running:**
+```bash
+curl http://localhost:5000
+```
+
+### 2. Frontend Setup
+
+```bash
+# Install dependencies
+npm install
+
+# Fix dependency conflicts (if any)
+npx expo install --fix
+
+# Start Metro bundler
+npm start
+```
+
+**Then:**
+- Press `a` for Android emulator (auto-connects to 10.0.2.2:5000)
+- Press `i` for iOS simulator
+- Press `w` for web
+- Scan QR code with Expo Go app on your phone
+
+### 3. MongoDB Configuration
+
+**Local MongoDB:**
+```bash
+# Start MongoDB locally
+mongod
+# The app will connect to mongodb://127.0.0.1:27017/campass
+```
+
+**MongoDB Atlas (Cloud):**
+- Update backend connection string with your MongoDB Atlas URL
+- Format: `mongodb+srv://username:password@cluster.mongodb.net/campass?retryWrites=true&w=majority`
 
 ## Project Structure
 
 ```
 mobile-app/
-├── config/
-│   └── supabase.js          # Supabase client configuration
-├── services/
-│   ├── authService.js       # Authentication operations
-│   ├── testService.js       # Test management
-│   ├── libraryService.js    # Library operations
-│   ├── doubtService.js      # Doubt management
-│   ├── notesService.js      # Notes upload/download
-│   └── adminService.js      # Admin operations
-├── screens/
-│   ├── auth/                # Login, Signup
-│   ├── student/             # Student screens
-│   ├── teacher/             # Teacher screens
-│   └── admin/               # Admin screens
-└── App.js                   # Main app with navigation
++-- backend/                 # Express server
+�   +-- server.js
+�   +-- package.json
+�   +-- middleware/
+�   �   +-- auth.js          # JWT verification
+�   +-- models/              # MongoDB schemas
+�   +-- routes/              # API endpoints
+�   +-- scripts/
+�       +-- add-dummy-data.js
++-- config/
+�   +-- api.js               # API service (auto-detects Android emulator)
++-- context/
+�   +-- UserContext.js       # Authentication context
++-- components/
+�   +-- NotificationBadge.js
+�   +-- UserHeader.js
+�   +-- WhatsAppAIButton.js  # Global WhatsApp AI button
++-- services/                # API service layer
++-- data/
+�   +-- mockGroupChatData.js # Mock group chat data (8 groups)
++-- screens/                 # UI screens by role
+�   +-- SplashScreen.js
+�   +-- RoleSelectorScreen.js
+    auth/
+    student/
+    teacher/
+    admin/
+ App.js                   # Main navigation
+ app.json
 ```
 
-## Database Schema Notes
+## API Endpoints
 
-The app expects the following tables (from `database-setup/schema.sql`):
-- `profiles` - User profiles with roles
-- `tests` - Mock tests
-- `test_results` - Student test results
-- `library_requests` - Book requests
-- `doubts` - Student doubts and teacher replies
-- `events` - College events (optional)
+### Authentication
+- `POST /api/auth/signup` - Register new user
+- `POST /api/auth/signin` - Login user
+- `GET /api/auth/me` - Get current user (requires token)
 
-**Additional tables (created by `database-extensions.sql`):**
-- `notes` - For storing note metadata
-- `books` - For library book inventory
-- `fines` - For tracking fines
+### Tests
+- `GET /api/tests` - Get all tests
+- `POST /api/tests/results` - Submit test result
+- `GET /api/tests/results/my` - Get user's test results
 
-## Storage Setup
+### Library
+- `GET /api/library/books` - Get all books
+- `POST /api/library/requests` - Request a book
+- `GET /api/library/requests/my` - Get user's requests
 
-1. Create a storage bucket named `notes` in Supabase
-2. Set bucket to public or configure proper RLS policies
-3. This bucket will store uploaded PDF notes
+### Doubts
+- `GET /api/doubts` - Get all doubts
+- `POST /api/doubts` - Post a new doubt
+- `POST /api/doubts/:id/reply` - Reply to a doubt
 
-## Authentication Flow
+### Notes
+- `GET /api/notes` - Get all notes
+- `POST /api/notes` - Upload note
 
-1. User signs up with email, password, and role (student/teacher)
-2. Account is created but `is_approved` is `false`
-3. Admin approves the account
-4. User can then log in and access role-specific features
+### Events
+- `GET /api/events` - Get all events
+- `POST /api/events` - Create event
+- `POST /api/events/:id/register` - Register for event
 
-## Role-Based Access
+### Notifications
+- `GET /api/notifications` - Get notifications
+- `GET /api/notifications/count` - Get unread count
 
-- **Students**: Can take tests, view results, ask doubts, request books, view notes
-- **Teachers**: Can create tests, upload notes, reply to doubts
-- **Admins**: Can approve users, manage library, manage fines
+### Admin
+- `GET /api/admin/users/pending` - Get pending approvals
+- `POST /api/admin/users/:id/approve` - Approve user
+- `GET /api/admin/fines` - Get fines
+
+## Key Features
+
+### Group Chat System
+- 8 interest-based groups with role-based filtering
+- Priority system (Low/Medium/High)
+- Search and sort functionality
+- Mock data for demonstration
+- **Location**: `screens/student/GroupChatListScreen.js`, `screens/teacher/TeacherGroupChatScreen.js`
+
+### Test Results with Mock Data
+- 4 sample test results included
+- Automatic percentage calculation
+- Toggle via `USE_MOCK` in `TestResultsScreen.js`
+- **Location**: `screens/student/TestResultsScreen.js`
+
+### WhatsApp AI Support
+- Global floating button on all screens
+- Green WhatsApp-branded button (bottom-right)
+- Links to: https://wa.me/15551572631
+- **Location**: `components/WhatsAppAIButton.js`
+
+### API Auto-Detection
+- Automatically detects Android emulator (uses 10.0.2.2:5000)
+- Respects EXPO_PUBLIC_API_URL environment variable
+- Logs chosen base URL at startup
+- **Location**: `config/api.js`
 
 ## Troubleshooting
 
-### Common Issues
+### Network Errors
 
-1. **"Supabase URL not found" or "Supabase Not Configured"**
-   - Make sure `.env` file exists with correct credentials
-   - Restart Expo after creating `.env`
-   - Check that environment variables start with `EXPO_PUBLIC_`
+**"Network request failed" on Android emulator:**
+```bash
+# The app auto-uses 10.0.2.2:5000 for Android emulator
+# Make sure backend is running:
+curl http://localhost:5000
 
-2. **"Unable to resolve asset" errors**
-   - Create the required image files in the `assets` folder
-   - See step 2 in Setup Instructions above
-   - You can temporarily comment out icon/splash in `app.json` for testing
+# Check Windows Firewall allows port 5000
+```
 
-3. **"Project is incompatible with this version of Expo Go"**
-   - Your Expo Go app is SDK 54, but project uses SDK 49
-   - **Option 1**: Install Expo Go for SDK 49 (link provided in error)
-   - **Option 2**: Upgrade project to SDK 54: `npx expo install expo@latest`
+**"Network request failed" on physical device:**
+```bash
+# Find your PC IP
+ipconfig
 
-4. **"URL.protocol is not implemented" error**
-   - This means Supabase credentials are missing or invalid
-   - Check your `.env` file has correct values
-   - Restart the Expo server after updating `.env`
+# Set environment variable (replace with your IP):
+$env:EXPO_PUBLIC_API_URL='http://192.168.x.x:5000/api'
 
-5. **"Storage bucket not found"**
-   - Create `notes` bucket in Supabase Storage
-   - Set appropriate permissions
+# Restart Metro
+npm start
+```
 
-6. **"Table does not exist"**
-   - Run the complete schema.sql in Supabase SQL Editor
-   - Run database-extensions.sql as well
-   - Check if all required tables are created
+### MongoDB Connection Errors
 
-7. **"Permission denied"**
-   - Check Row Level Security (RLS) policies in Supabase
-   - Ensure user is approved (`is_approved = true`)
+**"Cannot connect to MongoDB":**
+- Ensure MongoDB is running: `mongod`
+- Or use MongoDB Atlas with proper connection string
+- Check backend logs for connection details
 
-8. **Package version warnings**
-   - Run `npx expo install --fix` to automatically fix version mismatches
+### Build/Version Issues
 
-## Development
+**"Project incompatible with Expo":**
+```bash
+npx expo install --fix
+# or
+npx expo install expo@latest
+```
 
-- The app uses React Navigation for routing
-- Supabase handles authentication and database operations
-- File uploads use Expo Document Picker and File System
+## Environment Variables
+
+**Frontend (.env):**
+```
+EXPO_PUBLIC_API_URL=http://localhost:5000/api
+```
+
+**Backend (.env):**
+```
+PORT=5000
+MONGODB_URI=mongodb://127.0.0.1:27017/campass
+NODE_ENV=development
+```
+
+## Testing
+
+**Test as Student:**
+1. Signup with role "student"
+2. Go to Test Results - see 4 mock results
+3. Tap Group Chats - see 7 student groups
+4. Tap WhatsApp button () - opens WhatsApp
+
+**Test as Teacher:**
+1. Signup with role "teacher"
+2. Access Group Chats - see 7 teacher groups
+3. Create tests, upload notes, manage events
+
+**Test as Admin:**
+1. Signup with role "admin"
+2. Access dashboard - approve users, manage library, set fines
+
+## GitHub Repository
+
+https://github.com/Kavya7089/compass-Connect-mobile-app
+
+## Recent Updates
+
+-  Group chat feature with 8 interest groups
+-  Global WhatsApp AI button
+-  Mock test results data
+-  API auto-detection for Android emulator
+-  Fixed API response handling
+-  Event management system
+-  Community discussions platform
 
 ## License
 
-This project is part of the Campus Connect college management system.
-
+Campus Connect college management system
